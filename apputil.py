@@ -23,7 +23,7 @@ class Genius:
         )
 
         response = requests.get(genius_search_url)
-        response.raise_for_status()
+        #response.raise_for_status()
         data = response.json()
 
         # Ensure 'response' key exists
