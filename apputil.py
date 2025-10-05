@@ -13,15 +13,18 @@ class Genius:
         return {
             "Authorization": f"Bearer {self.access_token}"
         }
-    
+
+    def get(self, search_url, params):
+        response = requests.get(search_url, headers=self._headers(), params=params)
+        response.raise_for_status()
+        return response.json()
+
     def get_artist(self, search_term):
 
         # Step 1: Read the artist data from the Genius API using the search endpoint
         search_url = f"{self.base_url}/search"
         params = {"q": search_term}
-        response = requests.get(search_url, headers=self._headers(), params=params)
-        response.raise_for_status()
-        json_data = response.json()
+        json_data = self.get(search_url, params)
 
         # Step 2: Extract the (most likely, "Primary") Artist ID from the first "hit" of the search_term
         hits = json_data.get("response", {}).get("hits", [])
