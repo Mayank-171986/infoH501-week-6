@@ -9,13 +9,17 @@ class Genius:
         self.access_token = access_token
         self.base_url = "https://api.genius.com"
 
+    def _headers(self):
+        return {
+            "Authorization": f"Bearer {self.access_token}"
+        }
     
     def get_artist(self, search_term):
 
         # Step 1: Read the artist data from the Genius API using the search endpoint
-        genius_search_url = f"http://api.genius.com/search?q={search_term}&" + \
-                        f"access_token={self.access_token}"
-        response = requests.get(genius_search_url)
+        search_url = f"{self.base_url}/search"
+        params = {"q": search_term}
+        response = requests.get(search_url, headers=self._headers(), params=params)
         response.raise_for_status()
         json_data = response.json()
 
