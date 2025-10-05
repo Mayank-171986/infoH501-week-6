@@ -32,5 +32,6 @@ cython_debug/
 temp.json
 
 # environment (ignore one, use the other)
+.env
 # environment.yml
 requirements.txt
