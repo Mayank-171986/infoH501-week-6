@@ -23,9 +23,9 @@ class Genius:
         )
 
         response = requests.get(genius_search_url)
-        #response.raise_for_status()
-        #return response.json()
-        return response
+        response.raise_for_status()
+        return response.json()
+        #return response
 
     def get_artist(self, search_term):
 
