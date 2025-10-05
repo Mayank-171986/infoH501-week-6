@@ -31,9 +31,9 @@ class Genius:
 
         # Step 1: Read the artist data from the Genius API using the search endpoint
         
-        response = self.get(search_term)
-        response.raise_for_status()
-        json_data = response.json()
+        #response = self.get(search_term)
+        #response.raise_for_status()
+        json_data = self.get(search_term)
 
         # Step 2: Extract the (most likely, "Primary") Artist ID from the first "hit" of the search_term
         hits = json_data.get("response", {}).get("hits", [])
@@ -57,10 +57,10 @@ class Genius:
         artists_data = []
 
         for item in search_terms:
-            response = self.get(item)
-            response.raise_for_status()
-            artist_info = response.json()
-            #artist_info = self.get_artist(item)
+            #response = self.get(item)
+            #response.raise_for_status()
+            #artist_info = response.json()
+            artist_info = self.get_artist(item)
             if artist_info:
                 artists_data.append({
                     "search_term": item,
