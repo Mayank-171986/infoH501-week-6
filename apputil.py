@@ -14,7 +14,7 @@ class Genius:
 
         # Step 1: Read the artist data from the Genius API using the search endpoint
         genius_search_url = f"http://api.genius.com/search?q={search_term}&" + \
-                        f"access_token={self.access_token}&per_page={per_page}"
+                        f"access_token={self.access_token}"
         response = requests.get(genius_search_url)
         response.raise_for_status()
         json_data = response.json()
