@@ -18,14 +18,19 @@ class Genius:
         # Build the Genius search URL manually
         per_page = 1
         genius_search_url = (
-            f"https://api.genius.com/search?q={search_term}&"
-            f"access_token={self.access_token}&per_page={per_page}"
+        f"https://api.genius.com/search?q={search_term}&"
+        f"access_token={self.access_token}&per_page={per_page}"
         )
 
         response = requests.get(genius_search_url)
-        #response.raise_for_status()
-        return response.json()
-        #return response
+        response.raise_for_status()
+        data = response.json()
+
+        # Ensure 'response' key exists
+        if "response" not in data:
+            return {"response": {}}
+
+        return data
 
     def get_artist(self, search_term):
 
