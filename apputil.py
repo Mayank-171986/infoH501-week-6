@@ -14,17 +14,23 @@ class Genius:
             "Authorization": f"Bearer {self.access_token}"
         }
 
-    def get(self, search_url, params):
-        response = requests.get(search_url, headers=self._headers(), params=params)
+    def get(self, search_term):
+        # Build the Genius search URL manually
+        per_page = 1
+        genius_search_url = (
+            f"https://api.genius.com/search?q={search_term}&"
+            f"access_token={self.access_token}&per_page={per_page}"
+        )
+
+        response = requests.get(genius_search_url)
         response.raise_for_status()
         return response.json()
 
     def get_artist(self, search_term):
 
         # Step 1: Read the artist data from the Genius API using the search endpoint
-        search_url = f"{self.base_url}/search"
-        params = {"q": search_term}
-        json_data = self.get(search_url, params)
+        
+        json_data = self.get(search_term)
 
         # Step 2: Extract the (most likely, "Primary") Artist ID from the first "hit" of the search_term
         hits = json_data.get("response", {}).get("hits", [])
@@ -43,9 +49,6 @@ class Genius:
         # Step 4: Return the dictionary containing the resulting JSON object.
         return artist_data.get("response", {}).get("artist", {})
 
-    def get(self, search_term):
-        return self.get_artist(search_term)
-    
     # Step 5: Create a method get_artists that takes a list of search terms and returns a Pandas DataFrame
     def get_artists(self, search_terms):
         artists_data = []
