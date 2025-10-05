@@ -30,7 +30,7 @@ class Genius:
         if "response" not in data:
             return {"response": {}}
 
-        return data
+        return response.json()
 
     def get_artist(self, search_term):
 
