@@ -9,42 +9,19 @@ class Genius:
         self.access_token = access_token
         self.base_url = "https://api.genius.com"
 
-    def _headers(self):
-        return {
-            "Authorization": f"Bearer {self.access_token}"
-        }
-
     def get(self, search_url):
-        # Build the Genius search URL manually
-        #per_page = 1
-        #genius_search_url = (
-        #f"https://api.genius.com/search?q={search_term}&"
-        #f"access_token={self.access_token}&per_page={per_page}"
-        #)
-
-        response = requests.get(search_url)
-        #response.raise_for_status()
-        data = response.json()
-
-        # Ensure 'response' key exists
-        if "response" not in data:
-            return {"response": {}}
-
-        return data
+        headers = {"Authorization": f"Bearer {self.access_token}"}
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        return response.json()
 
     def get_artist(self, search_term):
 
         # Step 1: Read the artist data from the Genius API using the search endpoint
         
-        #response = self.get(search_term)
-        #response.raise_for_status()
         per_page = 1
-        genius_search_url = (
-        f"https://api.genius.com/search?q={search_term}&"
-        f"access_token={self.access_token}&per_page={per_page}"
-        )
-
-        json_data = self.get(genius_search_url)
+        search_url = f"{self.base_url}/search?q={search_term}&per_page={per_page}"
+        json_data = self.get(search_url)
 
         # Step 2: Extract the (most likely, "Primary") Artist ID from the first "hit" of the search_term
         hits = json_data.get("response", {}).get("hits", [])
@@ -55,12 +32,7 @@ class Genius:
         artist_id = primary_artist["id"]
 
         # Step 3: For this Artist ID to pull information about the artist.
-        artist_url = (f"{self.base_url}/artists/{artist_id}"
-                      f"access_token={self.access_token}&per_page={per_page}"
-                      )
-
-        #artist_response = requests.get(artist_url, headers=self._headers())
-        #artist_response.raise_for_status()
+        artist_url = f"{self.base_url}/artists/{artist_id}?per_page={per_page}"
         artist_data = self.get(artist_url)
 
 
