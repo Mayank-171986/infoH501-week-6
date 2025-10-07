@@ -14,7 +14,7 @@ class Genius:
             "Authorization": f"Bearer {self.access_token}"
         }
 
-    def get(self, search_term):
+    def get(self, search_ur):
         # Build the Genius search URL manually
         per_page = 1
         genius_search_url = (
@@ -30,7 +30,7 @@ class Genius:
         if "response" not in data:
             return {"response": {}}
 
-        return response.json()
+        return data
 
     def get_artist(self, search_term):
 
@@ -38,7 +38,13 @@ class Genius:
         
         #response = self.get(search_term)
         #response.raise_for_status()
-        json_data = self.get(search_term)
+
+        genius_search_url = (
+        f"https://api.genius.com/search?q={search_term}&"
+        f"access_token={self.access_token}&per_page={per_page}"
+        )
+
+        json_data = self.get(genius_search_url)
 
         # Step 2: Extract the (most likely, "Primary") Artist ID from the first "hit" of the search_term
         hits = json_data.get("response", {}).get("hits", [])
@@ -50,9 +56,10 @@ class Genius:
 
         # Step 3: For this Artist ID to pull information about the artist.
         artist_url = f"{self.base_url}/artists/{artist_id}"
-        artist_response = requests.get(artist_url, headers=self._headers())
-        artist_response.raise_for_status()
-        artist_data = artist_response.json()
+        #artist_response = requests.get(artist_url, headers=self._headers())
+        #artist_response.raise_for_status()
+        artist_data = self.get(artist_url)
+
 
         # Step 4: Return the dictionary containing the resulting JSON object.
         return artist_data.get("response", {}).get("artist", {})
