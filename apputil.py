@@ -16,13 +16,13 @@ class Genius:
 
     def get(self, search_ur):
         # Build the Genius search URL manually
-        per_page = 1
-        genius_search_url = (
-        f"https://api.genius.com/search?q={search_term}&"
-        f"access_token={self.access_token}&per_page={per_page}"
-        )
+        #per_page = 1
+        #genius_search_url = (
+        #f"https://api.genius.com/search?q={search_term}&"
+        #f"access_token={self.access_token}&per_page={per_page}"
+        #)
 
-        response = requests.get(genius_search_url)
+        response = requests.get(search_url)
         #response.raise_for_status()
         data = response.json()
 
@@ -38,7 +38,7 @@ class Genius:
         
         #response = self.get(search_term)
         #response.raise_for_status()
-
+        pe
         genius_search_url = (
         f"https://api.genius.com/search?q={search_term}&"
         f"access_token={self.access_token}&per_page={per_page}"
@@ -55,7 +55,10 @@ class Genius:
         artist_id = primary_artist["id"]
 
         # Step 3: For this Artist ID to pull information about the artist.
-        artist_url = f"{self.base_url}/artists/{artist_id}"
+        artist_url = (f"{self.base_url}/artists/{artist_id}"
+                      f"access_token={self.access_token}&per_page={per_page}"
+                      )
+
         #artist_response = requests.get(artist_url, headers=self._headers())
         #artist_response.raise_for_status()
         artist_data = self.get(artist_url)
