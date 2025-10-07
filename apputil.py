@@ -38,7 +38,7 @@ class Genius:
         
         #response = self.get(search_term)
         #response.raise_for_status()
-        pe
+        per_page = 1
         genius_search_url = (
         f"https://api.genius.com/search?q={search_term}&"
         f"access_token={self.access_token}&per_page={per_page}"
