@@ -14,7 +14,7 @@ class Genius:
             "Authorization": f"Bearer {self.access_token}"
         }
 
-    def get(self, search_ur):
+    def get(self, search_url):
         # Build the Genius search URL manually
         #per_page = 1
         #genius_search_url = (
