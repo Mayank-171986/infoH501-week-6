@@ -12,24 +12,25 @@ class Genius:
             "Authorization": f"Bearer {self.access_token}"
         }
 
-    def get_artist(self, search_term):
-        search_url = f"{self.base_url}/search"
-        params = {"q": search_term}
-        response = requests.get(search_url, headers=self._headers(), params=params)
+    def _get(self, url):
+        """
+        Internal method to send GET request to a URL and return JSON data.
+        """
+        response = requests.get(url, headers=self._headers())
         response.raise_for_status()
-        json_data = response.json()
+        return response.json()
+
+    def get_artist(self, search_term):
+        search_url = f"{self.base_url}/search?q={search_term}"
+        json_data = self._get(search_url)
 
         hits = json_data.get("response", {}).get("hits", [])
         if not hits:
-            return None  # Gracefully handle no results
+            return None
 
-        primary_artist = hits[0]["result"]["primary_artist"]
-        artist_id = primary_artist["id"]
-
+        artist_id = hits[0]["result"]["primary_artist"]["id"]
         artist_url = f"{self.base_url}/artists/{artist_id}"
-        artist_response = requests.get(artist_url, headers=self._headers())
-        artist_response.raise_for_status()
-        artist_data = artist_response.json()
+        artist_data = self._get(artist_url)
 
         return artist_data.get("response", {}).get("artist", {})
 
@@ -38,19 +39,11 @@ class Genius:
 
         for term in search_terms:
             artist_info = self.get_artist(term)
-            if artist_info:
-                records.append({
-                    "search_term": term,
-                    "artist_name": artist_info.get("name"),
-                    "artist_id": artist_info.get("id"),
-                    "followers_count": artist_info.get("followers_count", None)
-                })
-            else:
-                records.append({
-                    "search_term": term,
-                    "artist_name": None,
-                    "artist_id": None,
-                    "followers_count": None
-                })
+            records.append({
+                "search_term": term,
+                "artist_name": artist_info.get("name") if artist_info else None,
+                "artist_id": artist_info.get("id") if artist_info else None,
+                "followers_count": artist_info.get("followers_count") if artist_info else None
+            })
 
         return pd.DataFrame(records)
