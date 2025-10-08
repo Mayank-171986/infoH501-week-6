@@ -21,29 +21,42 @@ class Genius:
         return response.json()
 
     def get_artist(self, search_term):
+        """
+        Search for an artist by name and return basic artist info.
+        Returns a dictionary with keys: name, id, followers_count.
+        """
         search_url = f"{self.base_url}/search?q={search_term}"
         json_data = self._get(search_url)
 
         hits = json_data.get("response", {}).get("hits", [])
         if not hits:
-            return None
+            return {"name": None, "id": None, "followers_count": None}
 
         artist_id = hits[0]["result"]["primary_artist"]["id"]
         artist_url = f"{self.base_url}/artists/{artist_id}"
         artist_data = self._get(artist_url)
 
-        return artist_data.get("response", {})
+        artist = artist_data.get("response", {}).get("artist", {})
+        return {
+            "name": artist.get("name"),
+            "id": artist.get("id"),
+            "followers_count": artist.get("followers_count")
+        }
 
     def get_artists(self, search_terms):
+        """
+        Accepts a list of search terms and returns a DataFrame
+        with artist info for each term.
+        """
         records = []
 
         for term in search_terms:
             artist_info = self.get_artist(term)
             records.append({
                 "search_term": term,
-                "artist_name": artist_info.get("name") if artist_info else None,
-                "artist_id": artist_info.get("id") if artist_info else None,
-                "followers_count": artist_info.get("followers_count") if artist_info else None
+                "artist_name": artist_info["name"],
+                "artist_id": artist_info["id"],
+                "followers_count": artist_info["followers_count"]
             })
 
         return pd.DataFrame(records)
