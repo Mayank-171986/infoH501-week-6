@@ -32,7 +32,7 @@ class Genius:
         artist_url = f"{self.base_url}/artists/{artist_id}"
         artist_data = self._get(artist_url)
 
-        return artist_data.get("response", {}).get("artist", {})
+        return artist_data.get("response", {})
 
     def get_artists(self, search_terms):
         records = []
