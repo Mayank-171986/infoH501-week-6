@@ -30,18 +30,22 @@ class Genius:
 
         hits = json_data.get("response", {}).get("hits", [])
         if not hits:
-            return {"name": None, "id": None, "followers_count": None}
+            return {"response": {
+            "name": None,
+            "id": None,
+            "followers_count": None
+        }}
 
         artist_id = hits[0]["result"]["primary_artist"]["id"]
         artist_url = f"{self.base_url}/artists/{artist_id}"
         artist_data = self._get(artist_url)
 
         artist = artist_data.get("response", {}).get("artist", {})
-        return {
+        return {"response": {
             "name": artist.get("name"),
             "id": artist.get("id"),
             "followers_count": artist.get("followers_count")
-        }
+        }}
 
     def get_artists(self, search_terms):
         """
@@ -51,12 +55,12 @@ class Genius:
         records = []
 
         for term in search_terms:
-            artist_info = self.get_artist(term)
+            artist_info = self.get_artist(term).get("response", {})
             records.append({
-                "search_term": term,
-                "artist_name": artist_info["name"],
-                "artist_id": artist_info["id"],
-                "followers_count": artist_info["followers_count"]
-            })
+            "search_term": term,
+            "artist_name": artist_info.get("name"),
+            "artist_id": artist_info.get("id"),
+            "followers_count": artist_info.get("followers_count")
+         })
 
         return pd.DataFrame(records)
