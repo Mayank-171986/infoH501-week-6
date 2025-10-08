@@ -2,7 +2,11 @@
 import requests
 import pandas as pd
 
+'''
+Genius API wrapper to fetch artist information.'''
+
 class Genius:
+    '''Initialize the object, and "saves" the access token as an attribute of the object.'''
     def __init__(self, access_token):
         self.access_token = access_token
         self.base_url = "https://api.genius.com"
@@ -17,9 +21,10 @@ class Genius:
         response.raise_for_status()
         return response.json()
 
+    '''Fetch artist information based on a search term.'''
     def get_artist(self, search_term):
-        search_url = f"{self.base_url}/search?q={search_term}"
-        json_data = self._get(search_url)
+        genius_search_url = f"{self.base_url}/search?q={search_term}"
+        json_data = self._get(genius_search_url)
 
         hits = json_data.get("response", {}).get("hits", [])
         if not hits:
@@ -48,6 +53,7 @@ class Genius:
             }
         }
 
+    '''Fetch artist information for multiple search terms and return as a DataFrame.'''
     def get_artists(self, search_terms):
         records = []
 
