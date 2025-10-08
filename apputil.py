@@ -24,10 +24,12 @@ class Genius:
         hits = json_data.get("response", {}).get("hits", [])
         if not hits:
             return {
-                "artist": {
-                    "name": None,
-                    "id": None,
-                    "followers_count": None
+                "response": {
+                    "artist": {
+                        "name": None,
+                        "id": None,
+                        "followers_count": None
+                    }
                 }
             }
 
@@ -37,10 +39,12 @@ class Genius:
 
         artist = artist_data.get("response", {}).get("artist", {})
         return {
-            "artist": {
-                "name": artist.get("name"),
-                "id": artist.get("id"),
-                "followers_count": artist.get("followers_count")
+            "response": {
+                "artist": {
+                    "name": artist.get("name"),
+                    "id": artist.get("id"),
+                    "followers_count": artist.get("followers_count")
+                }
             }
         }
 
@@ -48,7 +52,7 @@ class Genius:
         records = []
 
         for term in search_terms:
-            artist_info = self.get_artist(term).get("artist", {})
+            artist_info = self.get_artist(term).get("response", {}).get("artist", {})
             records.append({
                 "search_term": term,
                 "artist_name": artist_info.get("name"),
